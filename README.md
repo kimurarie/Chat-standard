@@ -1,2 +1,2 @@
 # Chat-standard
-ゼミで作成したFirebaseを用いたテキストチャット
+3年次後期ゼミで作成したFirebaseを用いたテキストチャット
