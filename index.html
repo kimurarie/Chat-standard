@@ -5,30 +5,20 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 
-  <title>TextChat</title>
+  <title>Firebase Auth for google</title>
+  <style>
+    h1 {
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
 
-  <h3>...Please wait</h3>
-  <h1>Text Chat</h1>
-
-  <div class="container">
-    <div class="chat-area">
-      <div id="uname"></div>
-      <div id="messages"></div>
-    </div>
-    <div class="message-area">
-      <form autocomplete="off">
-        <div class="message-area-text">
-          <textarea type="text" id="message" rows="4" cols="40" placeholder="メッセージを入力" 
-          onkeydown="pushed(event)"></textarea>
-        </div>
-      </form>
-    </div>
-  </div>
+  <h1>Firebase Auth for Google</h1>
+  <div id="firebaseui-auth-container"></div>
 
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -36,120 +26,30 @@
   <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-firestore.js"></script>
-  <script src="/config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/ui/6.0.0/firebase-ui-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/ui/3.5.2/firebase-ui-auth__ja.js"></script>
+  <script src="./js/config.js"></script>
 
-  <!-- <script> -->
-  <script type="text/javascript">
+  <script>
 
-    var uid = "";
-    var uname = "";
+    // Firebase UIの設定
+    const uiConfig = {
+      // ログイン完了時のリダイレクト先
+      signInSuccessUrl: './home.html',
 
-    // 現在ログインしているユーザを取得する
-    firebase.auth().onAuthStateChanged((user) => {
-      let h3 = document.querySelector('h3');
+      // 利用する認証機能
+      signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID
+      ],
 
-      if (user) {
-
-        uid = user.uid;
-        uname = user.displayName;
-
-        h3.innerHTML = `Login Compleat！<br>` +
-          `ログインユーザ：${uname}<br>` +
-          `ユーザID：(${user.uid})`;
-        console.log(user);
-      }
-      else {
-        h3.innerText = 'Not Login';
-      }
-    });
-
-    // firebaseとデータ入れにmessagesという名前を付けて使えるようにする
-    const db = firebase.firestore();
-    const collection = db.collection('messages');
-
-    //formとmessage要素の取得
-    const message = document.getElementById('message');
-    const form = document.querySelector('form');
-    const messages = document.getElementById('messages');
-    const timestamp = document.getElementById('created');
-
-    console.log(timestamp);
-
-    collection.orderBy('created').onSnapshot(snapshot => {
-      snapshot.docChanges().forEach(change => {
-        if (change.type == 'added') {
-          const li = document.createElement('p');
-          const name = document.createElement('p');
-          const frame = document.createElement('div');
-          const body = document.createElement('div');
-          li.textContent = change.doc.data().message;
-          frame.appendChild(li);
-          // メッセージを投稿したユーザIDとログインユーザIDを比較
-          if(change.doc.data().id === uid){
-            // 自分が送ったメッセージ
-            frame.classList.add('light_message');
-            name.classList.add('light_uname');
-            name.textContent = uname;
-            body.appendChild(name);
-          }else{
-            // 相手が送ったメッセージ
-            frame.classList.add('left_message');
-          }
-          body.appendChild(frame);
-          messages.appendChild(body);
-
-          
-          console.log(change.doc.data().timestamp);
-        }
-      });
-    });
-
-    //formの投稿イベント、投稿されたらページ遷移しないように
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-    })
-
-    function pushed(e){
-
-      console.log(e);
-
-      //メッセージが空だった時にそれ以降の処理をしない
-      const val = message.value.trim();
-      if (val == "") {
-        return;
-      }
-
-      // Ctrl+Enterで投稿
-      if (e.code === 'Enter' && e.ctrlKey) {
-        //console.log("pass")
-
-        //フォームを空にしてフォーカスをあてる（処理成功の場合にあったものを移動）
-        message.value = '';
-        message.focus();
-
-        //データ入れにデータを保存してIDをふる
-        collection.add({
-          message: val,
-          created: firebase.firestore.FieldValue.serverTimestamp(),
-          id: uid
-        })
-          .then(doc => {
-            //処理が成功した場合はコンソールにIDを表示し
-            //messageの中身は空にし、フォームにフォーカスを当てる
-            console.log(`${doc.id} added!`);
-          })
-          .catch(error => {
-            //処理が失敗した場合は、コンソールにエラーメッセージを表示
-            console.log(error);
-          });
-      }else{
-        return;
-      }
+      // 利用規約のURL(任意で設定)
+      tosUrl: 'http://example.com/kiyaku/',
+      // プライバシーポリシーのURL(任意で設定)
+      privacyPolicyUrl: 'https://miku3.net/privacy.html'
     };
 
-    //ページ読み込み時にフォーカスをあてる
-    message.focus();
+    const ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
 
   </script>
 
