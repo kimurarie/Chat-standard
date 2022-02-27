@@ -1,19 +1,36 @@
+body{
+  margin: 0;
+}
+
+.main-contents{
+  width: 50%;
+  margin-left: 25%;
+}
+
 .container {
-  width: 40%;
   margin: 0px auto;
 }
 
 .chat-area {
-  height: 80vh;
+  height: calc(100vh - 150px);
   background: #8DB4E5;
-  overflow: scroll;
-  padding-top: 30px
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-top: 30px;
+  box-sizing: border-box;
 }
 
 .message-area {
   height: 10vh;
   display: flex;
  }
+
+.message-area form{
+display: flex;
+padding-top: 5px;
+height: 60px;
+width: 100%; 
+}
  
  /* テキストエリアは80%で表示 */
  .message-area-text {
@@ -28,49 +45,47 @@
   box-sizing: border-box; /* borderを付けてるので、border込の大きさにする */
  }
 
- h1{
-  width: 40%;
+ .main-contents h1{
   margin: 0px auto;
-  padding: 30px 0px;
   text-align: center;
   color: white;
   background: hsl(236, 48%, 20%);
+  height: 60px;
+  line-height: 60px;
  }
 
- h3{
-   text-align: right;
- }
-
- .light_uname {
-  text-align: right;
-  display: inline-block;
-  flex-direction: row;
-  position: relative; 
-  margin: 0px 0px 30px 50px;
-  padding: 8px;
-  max-width: 250px;
-  font-size: 15px;
+.message-area form button{
+  height: 100%;
+    margin-left: 10px;
+  width: 160px;
 }
 
- .light_message {
+.item{
+  display: flex;
+    align-items: flex-end;
+}
+
+ .right_message {
   display: flex;
   justify-content: flex-end;
+  padding-right: 10px;
+  padding-bottom: 15px;
 }
 
- .light_message p {
+.right_message .name{
+  font-size: 13px;
+  margin-bottom: 0px;
+}
+
+ .right_message .textMessage {
   text-align: right;
-  display: inline-block;
   flex-direction: row;
   position: relative; 
-  margin: 0px 20px 30px 50px;
-  padding: 8px;
-  max-width: 250px;
-  border-radius: 12px;
   background: #30e852;
   font-size: 15px;
 }
 
-.light_message p:after {
+.right_message .textMessage:after {
   content: "";
   position: absolute;
   top: 3px; 
@@ -81,18 +96,18 @@
   transform: rotate(-35deg);
 }
 
-.left_message p{
+.left_message{
+  padding-left: 10px;
+  padding-bottom: 15px;
+}
+
+.left_message .textMessage{
   text-align: left;
-  display: inline-block;
   position: relative; 
-  margin: 10px 150px 10px 20px;
-  padding: 10px;
-  max-width: 250px;
-  border-radius: 12px;
   background: #edf1ee;
  }
 
- .left_message p:after {
+ .left_message .textMessage:after {
   content: "";
   display: inline-block;
   position: absolute;
@@ -104,6 +119,20 @@
   transform: rotate(35deg);
 }
 
+.item p{
+  margin: 5px;
+}
+
+.textMessage{
+  display: inline-block;
+  padding: 10px;
+  max-width: 250px;
+  border-radius: 12px;
+ }
+
+ .time{
+   font-size: 8px;
+ }
 
 
 
